@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { CustomSelect } from "../components/select/CustomSelect";
-import { CustumInput } from "../components/select/CustomeInput";
+import { CustomInput } from "../components/select/CustomInput";
 
 interface Product {
   title: string;
@@ -14,8 +14,9 @@ function App() {
     { title: "Product 1", price: 100, brand: "honor" },
     { title: "fghjroduct 2", price: 200, brand: "MacBook" },
   ]);
-const [serchQuery, setSearchQuery] = useState("");
+const [searchQuery, setSearchQuery] = useState("");
  const [selectedSort, setSelected] =useState<string>("");
+
 const sortProducts = (sortBy: string) => { 
       setSelected(sortBy);
         setProducts([...products].sort((a, b) => {
@@ -27,10 +28,12 @@ const sortProducts = (sortBy: string) => {
     };
   return (
     <div>
-      <CustumInput type="text"
+      <CustomInput 
+      type="text"
       value={searchQuery}
       onChange={(e) => setSearchQuery(e.target.value)}
        placeholder="Search for..."/>
+
    <CustomSelect 
    value={selectedSort}
    onChange={(sort) => sortProducts(sort)}
