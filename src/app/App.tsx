@@ -16,6 +16,7 @@ function App() {
   const [products, setProducts] = useState<Product[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedSort, setSelected] = useState<string>("");
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
 
   useEffect(() => {
     async function fetchData() {
@@ -59,15 +60,14 @@ function App() {
     fetchData();
   }, []);
 
-
   const handleSearch = (value: string) => {
     setSearchQuery(value);
     filterProducts(value);
   };
 
   const filterProducts = (value: string) => {
-    setProducts(
-      [...products].filter((product) =>
+    setFilteredProducts(
+      products.filter((product) =>
         product.title.toLowerCase().includes(value.toLowerCase())
       )
     );
@@ -75,8 +75,8 @@ function App() {
 
   const sortProducts = (sortBy: string) => {
     setSelected(sortBy);
-    setProducts(
-      [...products].sort((a, b) => {
+    setFilteredProducts(
+      products.slice().sort((a, b) => {
         let valueA = a[sortBy];
         let valueB = b[sortBy];
 
@@ -95,7 +95,6 @@ function App() {
       })
     );
   };
-
   return (
     <div className="app">
       <CustomInput
@@ -117,7 +116,7 @@ function App() {
         ]}
       />
       <div className="product-list">
-        {products.map((product, index) => (
+        {filteredProducts.map((product, index) => (
           <div key={index} className="product-item">
             <h3>{product.title}</h3>
             <p>Price: ${product.price}</p>
@@ -127,6 +126,6 @@ function App() {
       </div>
     </div>
   );
-};
+}
 
 export default App;
