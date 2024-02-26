@@ -1,8 +1,38 @@
-import { ClassAttributes, InputHTMLAttributes, LegacyRef } from "react";
-import { JSX } from "react/jsx-runtime";
+import { useState } from "react";
+import { ChangeEvent } from "react";
 
-export function CustomInput (props: JSX.IntrinsicAttributes & ClassAttributes<HTMLInputElement> & InputHTMLAttributes<HTMLInputElement>, ref: LegacyRef<HTMLInputElement> | undefined) {
-  return <input ref={ref} {...props} />;
+interface CustomInputProps {
+  type: string;
+  value: string;
+  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  onSearch: (value: string) => void;
+  placeholder: string;
+}
+
+export const CustomInput: React.FC<CustomInputProps> = ({
+  type,
+  value,
+  onChange,
+  onSearch,
+  placeholder,
+}) => {
+  const [searchValue, setSearchValue] = useState(value);
+  const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setSearchValue(event.target.value);
+    onChange(event);
+  };
+  const handleSearch = () => {
+    onSearch(searchValue);
+  };
+  return (
+    <div>
+      <input
+        type={type}
+        value={searchValue}
+        onChange={handleInputChange}
+        placeholder={placeholder}
+      />
+      <button onClick={handleSearch}>Search</button>
+    </div>
+  );
 };
-
-

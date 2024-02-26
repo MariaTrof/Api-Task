@@ -1,8 +1,7 @@
 interface Option {
-    name: string;
-    value: string;
+  name: string;
+  value: string;
 }
-
 
 export const CustomSelect = ({
   options,
