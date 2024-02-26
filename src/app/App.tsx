@@ -1,7 +1,8 @@
+import axios from "axios";
+import md5 from "md5";
 import { useState, useEffect } from "react";
 import { CustomSelect } from "../components/select/CustomSelect";
 import { CustomInput } from "../components/select/CustomInput";
-import { ApiQuery } from "../api/ApiQuery";
 import "../styles/app.css";
 
 interface Product {
@@ -19,14 +20,39 @@ function App() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const allProductsResponse = await ApiQuery.getAll(50, 1);
-        console.log("All Products:", allProductsResponse.data);
+        const password = "Valantis";
+        const timestamp = "20240224";
+        const authString = `${password}_${timestamp}`;
+        const XAuth = md5(authString);
 
-        const productId = "123"; // Замените на реальный ID
-        const productResponse = await ApiQuery.getById(productId);
-        console.log("Product by ID:", productResponse.data);
+        axios.defaults.headers.common["X-Auth"] = XAuth;
+
+        const limit = 50; // default limit
+        const page = 1; // default page
+
+        const response = await axios.get("http://api.valantis.store:40000/", {
+          params: { _limit: limit, _page: page },
+        });
+
+        const productsData = response.data;
+
+        setProducts(productsData);
+
+        if (Array.isArray(productsData)) {
+          productsData.forEach((product) => {
+            const { id, price, brand } = product;
+            console.log(`Product ID: ${id}, Price: ${price}, Brand: ${brand}`);
+          });
+        } else {
+          console.error("Error: productsData is not an array");
+        }
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error(error);
+        if (error instanceof Error) {
+          // Handle specific error
+        } else {
+          // Handle other errors
+        }
       }
     }
 
@@ -90,7 +116,6 @@ function App() {
           { value: "brand", name: "Brand" },
         ]}
       />
-
       <div className="product-list">
         {products.map((product, index) => (
           <div key={index} className="product-item">
